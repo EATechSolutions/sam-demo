@@ -1,7 +1,7 @@
 {
   "Tags": {
     "Environment": "dev",
-    "Name": "example"
+    "Name": "demo"
   },
   "StackPolicy": {
     "Statement": [
