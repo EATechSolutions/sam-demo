@@ -10,7 +10,51 @@ Globals:
   Function:
     Timeout: 3
 
+Parameters:
+  FromEmail:
+    Type: String
+    Default: 'your@email.com'
+    Description: (Required) Represents the email sender. Must be a SES verified email. If you attempt to send email using a non-verified address or domain, the operation results in an "Email address not verified" error. Minimum 4 characters.
+    MinLength: 4
+    MaxLength: 70
+    ConstraintDescription: 'Required. Must be a SES verified email address.'
+  ClientEmail:
+    Type: String
+    Default: 'your@email.com'
+    Description: (Required) Represents the email recipient. Must be a SES verified email. If you attempt to send email using a non-verified address or domain, the operation results in an "Email address not verified" error. Minimum 4 characters.
+    MinLength: 4
+    MaxLength: 70
+    ConstraintDescription: 'Required. Must be a SES verified email address.'
+  CorsOrigin:
+    Type: String
+    Default: '*'
+    Description: (Optional) Cross-origin resource sharing (CORS) Origin. You can specify a single origin, all "*" or leave empty and no CORS will be applied.
+    MaxLength: 250
+
 Resources:
+  SendEmailFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: public-methods/
+      Handler: send.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          FROM_EMAIL: !Ref FromEmail
+          CLIENT_EMAIL: !Ref ClientEmail
+          CORS_ORIGIN: !Ref CorsOrigin
+      Events:
+        EmailApi:
+          Type: Api
+          Properties:
+            Path: /send
+            Method: POST
+        EmailOptionsApi:
+          Type: Api
+          Properties:
+            Path: /send
+            Method: OPTIONS
+
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -37,3 +81,6 @@ Outputs:
   HelloWorldFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
     Value: !GetAtt HelloWorldFunctionRole.Arn
+  SendEmailApi:
+    Description: "API Gateway endpoint URL for Prod stage for Send Email function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/send/"
