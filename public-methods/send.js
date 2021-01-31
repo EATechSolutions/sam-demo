@@ -4,9 +4,7 @@ const UTF8CHARSET = 'UTF-8';
 
 const CLIENT_EMAIL = process.env.CLIENT_EMAIL
 const FROM_EMAIL = process.env.FROM_EMAIL
-const REGION = process.env.REGION
 
-const ses = new SESClient({ region: REGION });
 
 exports.handler = async event => {
   if (event.httpMethod === 'OPTIONS') {
@@ -58,8 +56,10 @@ exports.handler = async event => {
   };
 
   try {
-    await ses.send(new SendEmailCommand(emailParams));
-    return processResponse(true, emailParams);
+    const REGION = process.env.REGION
+    const ses = new SESClient({ region: REGION });
+    const data = await ses.send(new SendEmailCommand(emailParams));
+    return processResponse(true, data);
   } catch (err) {
     console.error(err, err.stack);
     const errorResponse = `Error: Execution update, caused a SES error, please look at your logs.`;

@@ -46,7 +46,7 @@ Resources:
           FROM_EMAIL: !Ref FromEmail
           CLIENT_EMAIL: !Ref ClientEmail
           CORS_ORIGIN: !Ref CorsOrigin
-          Region: !Ref Region
+          REGION: !Ref Region
       Events:
         EmailApi:
           Type: Api
