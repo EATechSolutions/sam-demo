@@ -1,12 +1,12 @@
-// const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses")
+const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses")
 const  processResponse = require('./processResponse.js');
 const UTF8CHARSET = 'UTF-8';
 
 const CLIENT_EMAIL = process.env.CLIENT_EMAIL
 const FROM_EMAIL = process.env.FROM_EMAIL
-// const REGION = process.env.REGION
+const REGION = process.env.REGION
 
-// const ses = new SESClient({ region: REGION });
+const ses = new SESClient({ region: REGION });
 
 exports.handler = async event => {
   if (event.httpMethod === 'OPTIONS') {
@@ -18,7 +18,7 @@ exports.handler = async event => {
   }
   const emailData = JSON.parse(event.body);
 
-  if (!emailData.toEmails || emailData.email || !emailData.message) {
+  if (!emailData.email || !emailData.message) {
     return processResponse(true, 'Please specify email parameters: email and message', 400);
   }
 
@@ -31,7 +31,7 @@ exports.handler = async event => {
 
     Someone tried contacting you. Here are the details:
 
-    From: ${emailData}
+    From: ${emailData.email}
     Message: "${emailData.message}"
 
     Thank you
@@ -41,7 +41,7 @@ exports.handler = async event => {
   const body = { 
     Text: { 
       Charset: UTF8CHARSET,
-      Data: emailData.message
+      Data: message
     }
   };
 
@@ -58,7 +58,7 @@ exports.handler = async event => {
   };
 
   try {
-    // await ses.send(new SendEmailCommand(emailParams));
+    await ses.send(new SendEmailCommand(emailParams));
     return processResponse(true, emailParams);
   } catch (err) {
     console.error(err, err.stack);

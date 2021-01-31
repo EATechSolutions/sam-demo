@@ -30,6 +30,9 @@ Parameters:
     Default: '*'
     Description: (Optional) Cross-origin resource sharing (CORS) Origin. You can specify a single origin, all "*" or leave empty and no CORS will be applied.
     MaxLength: 250
+  Region:
+    Type: String
+    Default: 'us-east-1'
 
 Resources:
   SendEmailFunction:
@@ -43,6 +46,7 @@ Resources:
           FROM_EMAIL: !Ref FromEmail
           CLIENT_EMAIL: !Ref ClientEmail
           CORS_ORIGIN: !Ref CorsOrigin
+          Region: !Ref Region
       Events:
         EmailApi:
           Type: Api
