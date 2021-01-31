@@ -47,6 +47,9 @@ Resources:
           CLIENT_EMAIL: !Ref ClientEmail
           CORS_ORIGIN: !Ref CorsOrigin
           REGION: !Ref Region
+      Policies:
+        - SESCrudPolicy:
+            IdentityName: !Ref FromEmail
       Events:
         EmailApi:
           Type: Api
