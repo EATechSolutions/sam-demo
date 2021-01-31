@@ -7,7 +7,7 @@
   "author": "SAM CLI",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.4.1"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
